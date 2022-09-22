@@ -2,12 +2,18 @@ class RangeValidator {
     #from;
     #to;
     #arr;
-    #addValueToArray(val) {
-        this.#arr.push(val)
-    }
+    
     #fillArray() {
-        for (let i = this.from; i <= this.to - this.from + 1; i++) {
-            this.#addValueToArray(i);
+        this.#arr.length = 0;
+        if (this.to > this.from) {
+            for (let i = this.from; i <= this.to - this.from + 1; i++) {
+                this.#arr.push(i);
+            } 
+        } else if(this.to === this.from) {
+            this.#arr.push(this.from);
+            this.#arr.push(this.to);
+        } else {
+            throw new Error('Start value must <= end value');
         }
 
     }
@@ -37,10 +43,10 @@ class RangeValidator {
     }
 
     validate(val) {
-        if (this.#arr.indexOf(val) > 0) {
+        if (this.#arr.indexOf(val) > -1) {
             return val;
         }
-        throw new RangeError(`Number is out of range from ${rangeValidator.range[0]} to ${rangeValidator.range[1]}`);
+        throw new RangeError(`Number ${val} is out of range from ${rangeValidator.range[0]} to ${rangeValidator.range[this.range.length - 1]}`);
     }
 }
 
@@ -48,10 +54,10 @@ const rangeValidator = new RangeValidator(1, 5);
 try {
     console.log(rangeValidator.validate(3)); 
 } catch (err) {
-    console.log(err);
+    console.log(err.message);
 }
 try {
     rangeValidator.validate(6); 
 } catch (err) {
-    console.log(err);
+    console.log(err.message);
 }
