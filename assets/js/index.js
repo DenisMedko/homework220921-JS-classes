@@ -62,18 +62,22 @@ class RangeValidator {
 }
 
 const rangeValidator = new RangeValidator(1, '5');
+let validationResult;
 try {
-    console.log(rangeValidator.validate('3')); 
+    validationResult = rangeValidator.validate('3'); 
 } catch (err) {
-    console.log(err.message);
+    validationResult = err.message;
 }
+console.log(validationResult);
 try {
-    console.log(rangeValidator.validate(5)); 
+    validationResult = rangeValidator.validate(5); 
 } catch (err) {
-    console.log(err.message);
+    validationResult = err.message;
 }
+console.log(validationResult);
 try {
-    rangeValidator.validate(6); 
+    validationResult = rangeValidator.validate(6); 
 } catch (err) {
-    console.log(err.message);
+    validationResult = err.message;
 }
+console.log(validationResult);
