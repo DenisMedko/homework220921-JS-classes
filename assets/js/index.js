@@ -4,7 +4,15 @@ class RangeValidator {
     #arr;
     
     #fillArray() {
-        this.#arr.length = 0;
+        if (this.#arr.length) {
+            this.#arr.length = 0;
+        }
+        if (typeof this.from !== 'number' || !Number.isInteger(this.from)) {
+            throw new TypeError(`Value from ${this.from} is not integer number`);    
+        }
+        if (typeof this.to !== 'number' || !Number.isInteger(+this.to)) {
+            throw new TypeError(`Value to ${this.to} is not integer number`);    
+        }
         if (this.to > this.from) {
             for (let i = this.from; i <= this.to - this.from + 1; i++) {
                 this.#arr.push(i);
@@ -18,8 +26,8 @@ class RangeValidator {
 
     }
     constructor(startValue, endValue){
-        this.#from = Math.min(startValue, endValue);
-        this.#to = Math.max(startValue, endValue);
+        this.#from = Math.min(+startValue, +endValue);
+        this.#to = Math.max(+startValue, +endValue);
         this.#arr = [];
         this.#fillArray();
     }
@@ -30,11 +38,11 @@ class RangeValidator {
         return this.#to;
     }
     set from(value) {
-        this.#from = value;
+        this.#from = +value;
         this.#fillArray();
     }
     set to(value) {
-        this.#to = value;
+        this.#to = +value;
         this.#fillArray();
     }
     
@@ -43,7 +51,7 @@ class RangeValidator {
     }
 
     validate(val) {
-        if (isNaN(val) || !Number.isInteger(+val)) {
+        if (typeof +val !== 'number' || !Number.isInteger(+val)) {
             throw new TypeError(`Value ${val} is not integer number`);    
         }
         if (this.#arr.indexOf(+val) < 0 ) {
@@ -53,7 +61,7 @@ class RangeValidator {
     }
 }
 
-const rangeValidator = new RangeValidator(1, 5);
+const rangeValidator = new RangeValidator(1, '5');
 try {
     console.log(rangeValidator.validate('3')); 
 } catch (err) {
