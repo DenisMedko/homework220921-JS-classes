@@ -13,7 +13,7 @@ class RangeValidator {
             this.#arr.push(this.from);
             this.#arr.push(this.to);
         } else {
-            throw new Error('Start value must <= end value');
+            throw new Error('Start value must be <= end value');
         }
 
     }
