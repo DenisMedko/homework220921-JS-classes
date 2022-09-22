@@ -43,16 +43,24 @@ class RangeValidator {
     }
 
     validate(val) {
-        if (this.#arr.indexOf(val) > -1) {
-            return val;
+        if (isNaN(val) || !Number.isInteger(+val)) {
+            throw new TypeError(`Value ${val} is not integer number`);    
         }
-        throw new RangeError(`Number ${val} is out of range from ${rangeValidator.range[0]} to ${rangeValidator.range[this.range.length - 1]}`);
+        if (this.#arr.indexOf(+val) < 0 ) {
+            throw new RangeError(`Number ${val} is out of range from ${rangeValidator.range[0]} to ${rangeValidator.range[this.range.length - 1]}`); 
+        }
+        return val;
     }
 }
 
 const rangeValidator = new RangeValidator(1, 5);
 try {
-    console.log(rangeValidator.validate(3)); 
+    console.log(rangeValidator.validate('3')); 
+} catch (err) {
+    console.log(err.message);
+}
+try {
+    console.log(rangeValidator.validate(5)); 
 } catch (err) {
     console.log(err.message);
 }
