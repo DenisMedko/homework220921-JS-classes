@@ -6,6 +6,7 @@ class RangeValidator {
         if (this.#arr.length) {
             this.#arr.length = 0;
         }
+        
         if (this.to > this.from) {
             for (let i = this.from; i <= this.to + 1; i++) {
                 this.#arr.push(i);
@@ -18,10 +19,13 @@ class RangeValidator {
         }
     }
     #checkTypeOfValue(obj) {
-        if (isNaN(obj.value) || !Number.isInteger(+obj.value)) {
-            throw new TypeError(`Value ${obj.name} ${obj.value} is not integer number`);    
+        if (isNaN(obj.value) || !isFinite(+obj.value) || !Number.isInteger(+obj.value)) {
+                throw new TypeError(`Value ${obj.name} ${obj.value} is not integer number`);    
         }
-        return +obj.value;    
+        return +obj.value;  
+    }
+    static isRangeValidator(obj) {
+        return obj instanceof RangeValidator;
     }
     constructor(startValue, endValue){
         this.#from  = this.#checkTypeOfValue({name : 'from', value : startValue});
@@ -43,50 +47,56 @@ class RangeValidator {
         this.#to = this.#checkTypeOfValue({name : 'to', value : val});
         this.#fillArray();
     }
-    
     get range () {
         return [this.from, this.to];
     }
-
     validate(val) {
         val = this.#checkTypeOfValue({name : 'your number', value : val});
-        if (this.#arr.indexOf(val) < 0 ) {
-            throw new RangeError(`Your number ${val} is out of range from ${this.range[0]} to ${this.range[this.range.length - 1]}`); 
-        }
-        return val;
+        try {
+            if (this.#arr.indexOf(val) < 0 ) {
+                throw new RangeError(`Your number ${val} is out of range from ${this.range[0]} to ${this.range[this.range.length - 1]}`); 
+            }
+            return val;
+        } catch (err) {
+            return err.message;
+        }    
     }
 }
 
+let rangeValidator = {};
 try {
-    const rangeValidator = new RangeValidator(1, '5');
-    let validationResult;
-    try {
-        validationResult = rangeValidator.validate('3'); 
-    } catch (err) {
-        validationResult = err.message;
-    }
-    console.log(validationResult);
-    try {
-        rangeValidator.from = 4;
-        validationResult = rangeValidator.validate(5); 
-    } catch (err) {
-        validationResult = err.message;
-    }
-    console.log(validationResult);
-    try {
-        rangeValidator.to = '10';
-        validationResult = rangeValidator.validate(6); 
-    } catch (err) {
-        validationResult = err.message;
-    }
-    console.log(validationResult);
-    try {
-        rangeValidator.to = Infinity;
-        validationResult = rangeValidator.validate(99); 
-    } catch (err) {
-        validationResult = err.message;
-    }
-    console.log(validationResult);
+    rangeValidator = new RangeValidator(1, '5');
 } catch (err) {
     console.log(err.message);
-}
+} 
+
+if (RangeValidator.isRangeValidator(rangeValidator)) {
+
+    console.log(rangeValidator.validate('3'));
+    
+    try {
+        rangeValidator.from = 4;
+        console.log(rangeValidator.validate(5));
+    } catch (err) {
+        console.log(err.message);
+    } 
+
+    try {
+        rangeValidator.to = '10';    
+        console.log(rangeValidator.validate(6));
+    } catch (err) {
+        console.log(err.message);
+    } 
+
+    console.log(rangeValidator.validate(99));
+    
+    try {
+        rangeValidator.to = Infinity;
+        console.log(rangeValidator.validate(99));
+    } catch (err) {
+        console.log(err.message);
+    } 
+   
+} else {
+    console.log(`Your range validator is not instanse of ${RangeValidator.name}`);  
+}        
